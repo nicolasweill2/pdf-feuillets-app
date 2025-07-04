@@ -4,7 +4,7 @@ import os
 import tempfile
 from process_pdfs import process_folder  # ta fonction principale qui traite les PDFs
 
-st.title("Analyseur de PDF d'impression (Feuillets)")
+st.title("PDF scan - analyse des formats de feuillets")
 
 uploaded_zip = st.file_uploader("Chargez un dossier .zip contenant vos PDF", type="zip")
 
@@ -25,7 +25,7 @@ if uploaded_zip:
 
         with open(output_excel_path, "rb") as f:
             st.download_button(
-                label="📥 Télécharger le fichier Excel généré",
+                label="Télécharger le fichier Excel généré",
                 data=f,
                 file_name=os.path.basename(output_excel_path),
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
