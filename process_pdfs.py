@@ -149,7 +149,7 @@ def process_folder(folder_path: str) -> str:
     stats_pdf = pd.DataFrame({
         "nb_feuillets": feuillets_df.groupby("pdf").size(),
         "nb_pages": df.groupby("nom fichier")["nb pages"].first(),
-        "nb_feuillets_orphelins": feuillets_df[feuillets_df["page 2"] == ""].groupby("pdf").size(),
+        "nb_feuillets_recto_seul": feuillets_df[feuillets_df["page 2"] == ""].groupby("pdf").size(),
         "nb_feuillets_hors_A4": feuillets_df[feuillets_df["format"].apply(lambda x: "210" not in x or "297" not in x)].groupby("pdf").size(),
     })
     stats_pdf["nb_feuillets_orphelins"] = stats_pdf["nb_feuillets_orphelins"].fillna(0).astype(int)
