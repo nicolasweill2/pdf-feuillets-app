@@ -147,13 +147,11 @@ def process_folder(folder_path: str) -> str:
 
     # --- Préparer stats pour récapitulatif ---
     stats_pdf = pd.DataFrame({
-        "nb_feuillets": feuillets_df.groupby("pdf").size(),
         "nb_pages": df.groupby("nom fichier")["nb pages"].first(),
+        "nb_feuillets": feuillets_df.groupby("pdf").size(),
         "nb_feuillets_recto_seul": feuillets_df[feuillets_df["page 2"] == ""].groupby("pdf").size(),
-        "nb_feuillets_hors_A4": feuillets_df[feuillets_df["format"].apply(lambda x: "210" not in x or "297" not in x)].groupby("pdf").size(),
     })
     stats_pdf["nb_feuillets_orphelins"] = stats_pdf["nb_feuillets_orphelins"].fillna(0).astype(int)
-    stats_pdf["nb_feuillets_hors_A4"] = stats_pdf["nb_feuillets_hors_A4"].fillna(0).astype(int)
 
     formats_par_pdf = format_counts.groupby("pdf").apply(
         lambda df: "; ".join(f"{row['format']} ({row['nb_feuillets']})" for _, row in df.iterrows())
@@ -163,7 +161,6 @@ def process_folder(folder_path: str) -> str:
     total_feuillets = len(feuillets_df)
     total_pages = df["nb pages"].sum()
     total_orphelins = (feuillets_df["page 2"] == "").sum()
-    total_hors_A4 = feuillets_df[feuillets_df["format"].apply(lambda x: "210" not in x or "297" not in x)].shape[0]
 
     formats_counts_global = feuillets_df["format"].value_counts().to_frame().reset_index()
     formats_counts_global.columns = ["format", "effectif"]
@@ -199,10 +196,9 @@ def process_folder(folder_path: str) -> str:
 
     ws.cell(row=start_row - 1, column=recap_col, value="Résumé global").font = title_font
     resume_data = [
-        ("Nombre total de feuillets", total_feuillets),
         ("Nombre total de pages", total_pages),
+        ("Nombre total de feuillets", total_feuillets),
         ("Nombre total feuillets recto seul", total_orphelins),
-        ("Nombre total feuillets hors A4", total_hors_A4)
     ]
     for i, (label, value) in enumerate(resume_data):
         label_cell = ws.cell(row=start_row + i, column=recap_col, value=label)
