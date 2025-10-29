@@ -2,7 +2,7 @@ import streamlit as st
 import zipfile
 import os
 import tempfile
-from process_pdfs import process_folder  # ta fonction principale qui traite les PDFs
+from process_pdfs import process_folder 
 
 st.title("PDF scan - analyse des formats de feuillets")
 
@@ -20,7 +20,7 @@ if uploaded_zip:
         pdf_folder = tmpdir  # Dossier temporaire où les PDFs sont extraits
 
         st.write("Traitement en cours...")
-        output_excel_path = process_folder(pdf_folder)  # ta fonction renvoyant le chemin du fichier Excel
+        output_excel_path = process_folder(pdf_folder)  
         st.success("Traitement terminé !")
 
         with open(output_excel_path, "rb") as f:
