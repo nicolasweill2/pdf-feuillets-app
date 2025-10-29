@@ -41,7 +41,7 @@ def process_folder(folder_path: str) -> str:
     columns = ["nom fichier", "nb pages"] + [f"page {i+1}" for i in range(max_pages)]
     df = pd.DataFrame(data).reindex(columns=columns)
 
-    # --- Analyse feuillets ---
+    # analyse feuillets
     def dimensions_similaires(dim1, dim2, tol=0):
         w1, h1 = dim1
         w2, h2 = dim2
@@ -86,7 +86,7 @@ def process_folder(folder_path: str) -> str:
     feuillet_counts = feuillets_df["pdf"].value_counts().to_dict()
     feuillets_df["nombre de feuillets"] = feuillets_df["pdf"].map(feuillet_counts)
 
-    # --- Sauvegarder feuilles nb page + nb feuillet ---
+    # sauvegarder feuilles nb page + nb feuillet 
     output_excel = os.path.join(folder_path, f"pages_colonnes_dossier_{os.path.basename(folder_path)}.xlsx")
 
     with pd.ExcelWriter(output_excel, engine='openpyxl') as writer:
@@ -95,7 +95,7 @@ def process_folder(folder_path: str) -> str:
     with pd.ExcelWriter(output_excel, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
         feuillets_df.to_excel(writer, sheet_name="nb feuillet", index=False)
 
-    # --- Ajuster largeur colonnes des 2 feuilles ---
+    # ajuster largeur colonnes des 2 feuilles
     wb = load_workbook(output_excel)
     sheets_to_adjust = ["nb page", "nb feuillet"]
     for sheet_name in sheets_to_adjust:
@@ -113,7 +113,7 @@ def process_folder(folder_path: str) -> str:
                 ws.column_dimensions[col_letter].width = max_length + 2
     wb.save(output_excel)
 
-    # --- Générer le graphique de répartition ---
+    # générer le graphique de répartition
     format_counts = feuillets_df.groupby(["pdf", "format"]).size().reset_index(name="nb_feuillets")
     pivot_df = format_counts.pivot(index="pdf", columns="format", values="nb_feuillets").fillna(0)
     pivot_df = pivot_df.iloc[::-1]
@@ -145,7 +145,7 @@ def process_folder(folder_path: str) -> str:
     buffer.seek(0)
     plt.close()
 
-    # --- Préparer stats pour récapitulatif ---
+    # préparer stats pour récapitulatif 
     stats_pdf = pd.DataFrame({
         "nb_pages": df.groupby("nom fichier")["nb pages"].first(),
         "nb_feuillets": feuillets_df.groupby("pdf").size(),
@@ -165,7 +165,7 @@ def process_folder(folder_path: str) -> str:
     formats_counts_global = feuillets_df["format"].value_counts().to_frame().reset_index()
     formats_counts_global.columns = ["format", "effectif"]
 
-    # --- Génération feuille "Récapitulatif" ---
+    # génération feuille "Récapitulatif" 
     if "Récapitulatif" in wb.sheetnames:
         wb.remove(wb["Récapitulatif"])
     ws = wb.create_sheet("Récapitulatif")
