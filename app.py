@@ -17,7 +17,7 @@ if uploaded_zip:
         with zipfile.ZipFile(zip_path, 'r') as zip_ref:
             zip_ref.extractall(tmpdir)
 
-        pdf_folder = tmpdir  # Dossier temporaire où les PDFs sont extraits
+        pdf_folder = tmpdir  
 
         st.write("Traitement en cours...")
         output_excel_path = process_folder(pdf_folder)  
