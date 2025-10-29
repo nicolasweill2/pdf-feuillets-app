@@ -8,13 +8,14 @@ st.title("PDF scan - analyse des formats de feuillets")
 
 uploaded_zip = st.file_uploader("Chargez un dossier .zip contenant vos PDF", type="zip")
 
+
 if uploaded_zip:
-    with tempfile.TemporaryDirectory() as tmpdir:
+    with tempfile.TemporaryDirectory() as tmpdir: # création d'un dossier temporaire pour extraire le zip
         zip_path = os.path.join(tmpdir, "archive.zip")
         with open(zip_path, "wb") as f:
             f.write(uploaded_zip.read())
 
-        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref: 
             zip_ref.extractall(tmpdir)
 
         pdf_folder = tmpdir  
